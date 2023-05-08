@@ -7,6 +7,7 @@ const fs = require('fs');
 const client = new Client({
     restartOnAuthFail: true,
     puppeteer: {
+        executablePath: '/usr/bin/chromium-browser',
         headless: true,
         args: [ '--no-sandbox', '--disable-setuid-sandbox' ]
     },
@@ -36,8 +37,8 @@ client.on('ready', () => {
 client.on('message', async (message) => {
     const isGroups = message.from.endsWith('@g.us') ? true : false;
     if ((isGroups && config.groups) || !isGroups) {
-        if (message.type == "image") {
-            client.sendMessage(message.from, "*[⏳]* Loading..");
+        if (message.type == "image" && message.body == "/s") {
+//            client.sendMessage(message.from, "*[⏳]* Loading..");
             try {
                 const media = await message.downloadMedia();
                 client.sendMessage(message.from, media, {
@@ -45,18 +46,8 @@ client.on('message', async (message) => {
                     stickerName: config.name, // Sticker Name = Edit in 'config/config.json'
                     stickerAuthor: config.author // Sticker Author = Edit in 'config/config.json'
                 }).then(() => {
-                    client.sendMessage(message.from, "*[✅]* Successfully!");
+//                    client.sendMessage(message.from, "*[✅]* Successfully!");
                 });
-            } catch {
-                client.sendMessage(message.from, "*[❎]* Failed!");
-            }
-        } else if (message.type == "sticker") {
-            client.sendMessage(message.from, "*[⏳]* Loading..");
-            try {
-                const media = await message.downloadMedia();
-                client.sendMessage(message.from, media).then(() => {
-                    client.sendMessage(message.from, "*[✅]* Successfully!");
-                });  
             } catch {
                 client.sendMessage(message.from, "*[❎]* Failed!");
             }
